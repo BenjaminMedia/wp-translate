@@ -1,0 +1,38 @@
+{
+  "name": "benjaminmedia/wp-translate",
+  "description": "",
+  "type": "wordpress-plugin",
+  "keywords": ["wordpress", "plugin"],
+  "homepage": "https://github.com/BenjaminMedia/wp-translate",
+  "repositories":[
+    {
+      "type": "composer",
+      "url": "http://wpackagist.org"
+    }
+  ],
+  "authors": [
+    {
+      "name": "Bonnier Publications",
+      "email": "interactive@bonnier.dk",
+      "homepage": "http://bonnierpublications.com"
+    },
+    {
+      "name": "Michael Sørensen",
+      "email": "michael.sorensen@bonnier.dk"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/BenjaminMedia/wp-translate/issues",
+    "source": "https://github.com/BenjaminMedia/wp-translate"
+  },
+  "autoload": {
+    "psr-4": {
+      "WpTranslate\\": "src"
+    }
+  },
+  "require": {
+    "php": ">=5.6",
+    "composer/installers": "~1.0",
+    "illuminate/support": "^5.4"
+  }
+}
