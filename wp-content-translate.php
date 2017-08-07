@@ -1,19 +1,27 @@
 <?php
+/**
+ * Plugin Name: WP Content Translate
+ * Version: 0.1.0
+ * Plugin URI: https://github.com/BenjaminMedia/wp-translate
+ * Description: Mark translation ready content with this smart plugin!
+ * Author: Bonnier - Michael Sørensen
+ * License: GPL v3
+ */
 
-namespace WpTranslate;
+namespace WpContentTranslate;
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-require __DIR__ .'autoload.php';
+require __DIR__ .'/autoload.php';
 
 class Plugin
 {
     /**
      * Text domain for translators
      */
-    const TEXT_DOMAIN = 'wp-translate';
+    const TEXT_DOMAIN = 'wp-content-translate';
     const CLASS_DIR = 'src';
 
     /**
@@ -36,7 +44,7 @@ class Plugin
     /**
      * @var string Plugins directory for this plugin.
      */
-    public $pluginDir;
+    public $plugin_dir;
 
     /**
      * @var Object
@@ -56,8 +64,8 @@ class Plugin
         // Set plugin file variables
         $this->file = __FILE__;
         $this->basename = plugin_basename($this->file);
-        $this->pluginDir = plugin_dir_path($this->file);
-        $this->pluginUrl = plugin_dir_url($this->file);
+        $this->plugin_dir = plugin_dir_path($this->file);
+        $this->plugin_url = plugin_dir_url($this->file);
         // Load textdomain
         load_plugin_textdomain(self::TEXT_DOMAIN, false, dirname($this->basename) . '/languages');
 
@@ -71,6 +79,7 @@ class Plugin
     {
         if (!self::$instance) {
             self::$instance = new self;
+            self::$instance->columns();
             global $wpTranslate;
             $wpTranslate = self::$instance;
 
@@ -83,6 +92,17 @@ class Plugin
         return self::$instance;
     }
 
+    private function columns()
+    {
+        $columns = new Columns();
+        $columns->registerColumns();
+    }
+
+    private function bootstrap()
+    {
+        //$bootstrap = new Bootstrap();
+        //$bootstrap->bootstrap();
+    }
 }
 
 /**

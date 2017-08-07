@@ -1,6 +1,20 @@
-.trapp-state-translated a {
+.wptranslate-state-translated a {
     background-color: rgba(0, 255, 0, 0.4);
     rgba(25, 25, 25, .5);:0.2;
+    border-radius: 7px;
+    color: #098788;
+}
+
+.wptranslate-state-progress a {
+     background-color: rgba(255, 173, 0, 0.4);
+ rgba(25, 25, 25, .5);:0.2;
+     border-radius: 7px;
+     color: #098788;
+ }
+
+.wptranslate-state-ready a {
+    background-color: rgba(255, 0, 2, 0.4);
+rgba(25, 25, 25, .5);:0.2;
     border-radius: 7px;
     color: #098788;
 }
@@ -106,7 +120,7 @@ tr.form-field .ui-datepicker {
     padding-bottom: 0;
 }
 
-#ml_box .form-wrap .form-field label[for=trapp-start]:after {
+#ml_box .form-wrap .form-field label[for=wptranslate-start]:after {
     color: #82878c;
     content: '\f223';
     display: inline-block;
