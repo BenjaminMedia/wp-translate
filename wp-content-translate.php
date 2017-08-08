@@ -113,4 +113,26 @@ function instance()
     return Plugin::instance();
 }
 
+function translation_deadline_column_head($defaults)
+{
+    $defaults['translation_deadline'] = 'Translation Deadline';
+    return $defaults;
+}
+
+function translation_deadline_column_content($column_name, $post_ID)
+{
+    if('translation_deadline' === $column_name) {
+        if('ready' === get_post_meta($post_ID, 'translation_state', true)) {
+            $deadline = get_post_meta($post_ID, 'translation_deadline', true);
+            if ($deadline) {
+                echo date('F j, Y', strtotime($deadline));
+                return;
+            }
+        }
+    }
+}
+
+add_filter('manage_posts_columns', __NAMESPACE__ . '\translation_deadline_column_head');
+add_action('manage_posts_custom_column', __NAMESPACE__ . '\translation_deadline_column_content', 10, 2);
+
 add_action('plugins_loaded', __NAMESPACE__ . '\instance', 0);
