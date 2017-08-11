@@ -80,6 +80,7 @@ class Plugin
         if (!self::$instance) {
             self::$instance = new self;
             self::$instance->columns();
+            self::$instance->compositeMetaMenu();
             global $wpTranslate;
             $wpTranslate = self::$instance;
 
@@ -98,10 +99,10 @@ class Plugin
         $columns->registerColumns();
     }
 
-    private function bootstrap()
+    private function compositeMetaMenu()
     {
-        //$bootstrap = new Bootstrap();
-        //$bootstrap->bootstrap();
+        $contenthubComposite = new ContenthubComposite();
+        $contenthubComposite->registerMetabox();
     }
 }
 
