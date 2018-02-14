@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: WP Content Translate
- * Version: 0.1.0
+ * Version: 1.0.0
  * Plugin URI: https://github.com/BenjaminMedia/wp-translate
  * Description: Mark translation ready content with this smart plugin!
  * Author: Bonnier - Michael Sørensen
