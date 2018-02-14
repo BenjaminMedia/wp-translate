@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: WP Content Translate
- * Version: 0.1.0
+ * Version: 1.0.0
  * Plugin URI: https://github.com/BenjaminMedia/wp-translate
  * Description: Mark translation ready content with this smart plugin!
  * Author: Bonnier - Michael Sørensen
@@ -132,7 +132,27 @@ function translation_deadline_column_content($column_name, $post_ID)
     }
 }
 
+function sortable_column($columns) {
+    $columns['translation_deadline'] = 'translation_deadline';
+    return $columns;
+}
+
+function translation_deadline_orderby($query) {
+    if(!is_admin()) {
+        return;
+    }
+    
+    $orderby = $query->get('orderby');
+    if('translation_deadline' == $orderby) {
+        $query->set('meta_key', 'translation_deadline');
+        $query->set('orderby', 'meta_value');
+        $query->set('meta_type', 'DATE');
+    }
+}
+
 add_filter('manage_posts_columns', __NAMESPACE__ . '\translation_deadline_column_head');
 add_action('manage_posts_custom_column', __NAMESPACE__ . '\translation_deadline_column_content', 10, 2);
+add_filter('manage_edit-contenthub_composite_sortable_columns', __NAMESPACE__ . '\sortable_column');
+add_action('pre_get_posts', __NAMESPACE__ . '\translation_deadline_orderby');
 
 add_action('plugins_loaded', __NAMESPACE__ . '\instance', 0);
