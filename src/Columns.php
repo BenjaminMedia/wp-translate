@@ -6,7 +6,7 @@ class Columns
 {
     public function registerColumns()
     {
-        $post_types = ['contenthub_composite'];
+        $post_types = collect(get_post_types(['public' => true]))->reject('attachment');
 
         foreach ($post_types as $post_type) {
             add_action('manage_' . $post_type . '_posts_custom_column', [$this, 'pll_before_post_column'], 8, 2);
