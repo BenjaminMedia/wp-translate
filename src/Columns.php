@@ -6,9 +6,14 @@ class Columns
 {
     public function registerColumns()
     {
+
         $post_types = collect(get_post_types(['public' => true]))->reject('attachment');
 
+        // Add filter to allow adding extra post types that are registered at a later point
+        $post_types = apply_filters('wp_translate_post_types', $post_types);
+
         foreach ($post_types as $post_type) {
+            add_filter('manage_edit-'. $post_type .'_sortable_columns', [$this, 'sortable_column']);
             add_action('manage_' . $post_type . '_posts_custom_column', [$this, 'pll_before_post_column'], 8, 2);
             add_action('manage_' . $post_type . '_posts_custom_column', [$this, 'pll_after_post_column'], 12, 2);
         }
@@ -25,24 +30,13 @@ class Columns
         $language = Pll()->model->get_language( substr( $column, 9 ) );
         $translation_id = pll_get_post($post_id, $language->slug);
 
-        $meta_post_data = get_post_meta($translation_id, 'translation_state', true);
+        $meta_post_data = get_post_meta($translation_id, TranslationMetaBox::TRANSLATION_STATE, true);
 
         if($meta_post_data === false || $meta_post_data === '') {
             return;
         }
 
-        switch ($meta_post_data) {
-            case 'progress':
-                echo '<span class="wptranslate-state-progress">'.PHP_EOL;
-                break;
-            case 'translated':
-                echo '<span class="wptranslate-state-translated">'.PHP_EOL;
-                break;
-            case 'ready':
-                echo '<span class="wptranslate-state-ready">'.PHP_EOL;
-                break;
-        }
-        return;
+        echo sprintf('<span class="wptranslate-state-%s">%s', $meta_post_data, PHP_EOL);
     }
 
     public function pll_after_post_column( $column, $post_id ) {
@@ -53,7 +47,7 @@ class Columns
         $language = Pll()->model->get_language( substr( $column, 9 ) );
         $translation_id = pll_get_post($post_id, $language->slug);
 
-        $meta_post_data = get_post_meta($translation_id, 'translation_state', true);
+        $meta_post_data = get_post_meta($translation_id, TranslationMetaBox::TRANSLATION_STATE, true);
 
         if($meta_post_data === false || $meta_post_data === '') {
             return;
@@ -70,5 +64,10 @@ class Columns
     public function enqueueColumnsStyles()
     {
         wp_enqueue_style('wpcontenttranslate-metabox', \WpContentTranslate\instance()->plugin_url . 'assets/css/style.css');
+    }
+
+    public function sortable_column($columns) {
+        $columns['translation_deadline'] = 'translation_deadline';
+        return $columns;
     }
 }

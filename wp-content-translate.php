@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: WP Content Translate
- * Version: 1.1.0
+ * Version: 2.0.0
  * Plugin URI: https://github.com/BenjaminMedia/wp-translate
  * Description: Mark translation ready content with this smart plugin!
  * Author: Bonnier - Michael Sørensen
@@ -96,6 +96,7 @@ class Plugin
     {
         $columns = new Columns();
         $columns->registerColumns();
+        TranslationMetaBox::register();
     }
 
     private function bootstrap()
@@ -122,26 +123,20 @@ function translation_deadline_column_head($defaults)
 function translation_deadline_column_content($column_name, $post_ID)
 {
     if('translation_deadline' === $column_name) {
-        if('ready' === get_post_meta($post_ID, 'translation_state', true)) {
-            $deadline = get_post_meta($post_ID, 'translation_deadline', true);
-            if ($deadline) {
-                echo date('F j, Y', strtotime($deadline));
-                return;
-            }
+        $deadline = get_post_meta($post_ID, 'translation_deadline', true);
+        if ($deadline) {
+            echo date('F j, Y', strtotime($deadline));
+            return;
         }
+        echo '--';
     }
-}
-
-function sortable_column($columns) {
-    $columns['translation_deadline'] = 'translation_deadline';
-    return $columns;
 }
 
 function translation_deadline_orderby($query) {
     if(!is_admin()) {
         return;
     }
-    
+
     $orderby = $query->get('orderby');
     if('translation_deadline' == $orderby) {
         $query->set('meta_key', 'translation_deadline');
@@ -152,7 +147,6 @@ function translation_deadline_orderby($query) {
 
 add_filter('manage_posts_columns', __NAMESPACE__ . '\translation_deadline_column_head');
 add_action('manage_posts_custom_column', __NAMESPACE__ . '\translation_deadline_column_content', 10, 2);
-add_filter('manage_edit-contenthub_composite_sortable_columns', __NAMESPACE__ . '\sortable_column');
 add_action('pre_get_posts', __NAMESPACE__ . '\translation_deadline_orderby');
 
-add_action('plugins_loaded', __NAMESPACE__ . '\instance', 0);
+add_action('after_setup_theme', __NAMESPACE__ . '\instance', 0);
