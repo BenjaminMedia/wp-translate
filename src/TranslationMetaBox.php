@@ -19,7 +19,7 @@ class TranslationMetaBox
                 'wp_content_translate',
                 'Translation State',
                 [__CLASS__, 'metaBoxContent'],
-                collect(get_post_types(['public' => true]))->reject('attachment')->toArray(),
+                Plugin::instance()->post_types(),
                 'side'
             );
         });
@@ -39,7 +39,7 @@ class TranslationMetaBox
         }
         if (isset($_POST[static::TRANSLATION_DEADLINE])) {
             $formattedDate = date('Ymd', strtotime($_POST[static::TRANSLATION_DEADLINE]));
-            update_post_meta($postId,static::TRANSLATION_DEADLINE, $formattedDate);
+            update_post_meta($postId, static::TRANSLATION_DEADLINE, $formattedDate);
         }
     }
 
@@ -53,23 +53,22 @@ class TranslationMetaBox
 
         $postTranslationState = get_post_meta($post->ID, static::TRANSLATION_STATE, true);
 
-        echo
-            sprintf(
-                '<p><strong>Translation Status</strong></p><select name="%s"><option value="" %s>- Select -</option>',
-                static::TRANSLATION_STATE,
-                $postTranslationState ? 'selected="selected"' : ''
-            )
-            .
-            collect($translationStates)->map(function ($translationState, $label) use ($postTranslationState) {
-                return sprintf(
-                    '<option value="%s" %s>%s</option>',
-                    $translationState,
-                    $postTranslationState === $translationState ? 'selected="selected"' : '',
-                    $label
-                );
-            })->implode('')
-            .
-            '</select><br>';
+        $out = sprintf(
+            '<p><strong>Translation Status</strong></p><select name="%s"><option value="" %s>- Select -</option>',
+            static::TRANSLATION_STATE,
+            $postTranslationState ? 'selected="selected"' : ''
+        );
+
+        foreach ($translationStates as $label => $translationState) {
+            $out .= sprintf(
+                '<option value="%s" %s>%s</option>',
+                $translationState,
+                $postTranslationState === $translationState ? 'selected="selected"' : '',
+                $label
+            );
+        }
+        $out .= '</select><br>';
+        echo $out;
     }
 
     private static function printTranslationDeadline($post)

@@ -6,13 +6,7 @@ class Columns
 {
     public function registerColumns()
     {
-
-        $post_types = collect(get_post_types(['public' => true]))->reject('attachment');
-
-        // Add filter to allow adding extra post types that are registered at a later point
-        $post_types = apply_filters('wp_translate_post_types', $post_types);
-
-        foreach ($post_types as $post_type) {
+        foreach (Plugin::instance()->post_types() as $post_type) {
             add_filter('manage_edit-'. $post_type .'_sortable_columns', [$this, 'sortable_column']);
             add_action('manage_' . $post_type . '_posts_custom_column', [$this, 'pll_before_post_column'], 8, 2);
             add_action('manage_' . $post_type . '_posts_custom_column', [$this, 'pll_after_post_column'], 12, 2);
