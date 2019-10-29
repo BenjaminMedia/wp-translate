@@ -34,12 +34,14 @@ class TranslationMetaBox
 
     public static function saveMetaBoxSettings($postId)
     {
-        if (isset($_POST[static::TRANSLATION_STATE])) {
+        if (isset($_POST[static::TRANSLATION_STATE]) && ! empty($_POST[static::TRANSLATION_STATE])) {
             update_post_meta($postId, static::TRANSLATION_STATE, $_POST[static::TRANSLATION_STATE]);
         }
-        if (isset($_POST[static::TRANSLATION_DEADLINE])) {
-            $formattedDate = date('Ymd', strtotime($_POST[static::TRANSLATION_DEADLINE]));
-            update_post_meta($postId, static::TRANSLATION_DEADLINE, $formattedDate);
+        if (isset($_POST[static::TRANSLATION_DEADLINE]) && ! empty($_POST[static::TRANSLATION_DEADLINE])) {
+            if ($parsedTime = strtotime($_POST[static::TRANSLATION_DEADLINE])) {
+                $formattedDate = date('Ymd', $parsedTime);
+                update_post_meta($postId, static::TRANSLATION_DEADLINE, $formattedDate);
+            }
         }
     }
 
@@ -84,7 +86,12 @@ class TranslationMetaBox
         );
 
         echo sprintf(
-            '<script type="text/javascript"> flatpickr("#%s", { dateFormat: "M d, Y" }); </script>',
+            '<script type="text/javascript"> flatpickr("#%s", {
+                altInput: true,
+                dateFormat: "Ymd",
+                altFormat: "M d, Y",
+                minDate: "today",
+            }); </script>',
             static::TRANSLATION_DEADLINE
         );
     }
